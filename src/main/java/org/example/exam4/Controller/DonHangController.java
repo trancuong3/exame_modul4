@@ -45,9 +45,9 @@ public class DonHangController {
         Pageable pageable = PageRequest.of(page, size);
         Page<DonHang> ordersPage = donHangService.getAllOrders(pageable);
 
-        // Kiểm tra xem ordersPage có dữ liệu hay không
+       
         if (ordersPage == null || ordersPage.isEmpty()) {
-            model.addAttribute("ordersPage", null); // Hoặc bạn có thể thêm một thông báo rằng không có đơn hàng nào.
+            model.addAttribute("ordersPage", null); 
         } else {
             model.addAttribute("ordersPage", ordersPage);
         }
