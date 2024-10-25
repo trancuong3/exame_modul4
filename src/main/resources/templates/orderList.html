@@ -4,6 +4,19 @@
     <title>Danh sách đơn hàng</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            margin-right: 10px;
+        }
         .suggestions {
             border: 1px solid #ccc;
             max-height: 150px;
@@ -20,6 +33,30 @@
         .suggestion-item:hover {
             background-color: #f0f0f0;
         }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #ccc;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .pagination {
+            margin-top: 20px;
+        }
+        .pagination a {
+            margin-right: 5px;
+            text-decoration: none;
+            color: #007bff;
+        }
+        .pagination a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -33,7 +70,7 @@
 </form>
 
 <div>
-    <label for="loaiSanPham">Tìm kiếm loại sản phẩm:</label>
+    <label for="loaiSanPhamSearch">Tìm kiếm loại sản phẩm:</label>
     <input type="text" id="loaiSanPhamSearch" placeholder="Nhập tên loại sản phẩm..." autocomplete="off" />
     <div id="suggestions" class="suggestions"></div>
 </div>
@@ -53,7 +90,7 @@
     </select>
 </div>
 
-<table border="1">
+<table>
     <thead>
     <tr>
         <th>Số thứ tự</th>
@@ -68,9 +105,8 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="order, stat : ${ordersPage.content}">
-
-    <td th:text="${stat.index + 1 + (ordersPage != null ? ordersPage.number * ordersPage.size : 0)}"></td>
+    <tr th:each="order, stat : ${ordersPage?.content}">
+        <td th:text="${stat.index + 1 + (ordersPage != null ? ordersPage.number * ordersPage.size : 0)}"></td>
         <td th:text="${order.maDonHang}"></td>
         <td th:text="${order.sanPham?.tenSp}"></td>
         <td th:text="${order.sanPham?.giaSp}"></td>
@@ -86,12 +122,9 @@
         </td>
     </tr>
     </tbody>
-
-
-
 </table>
 
-<div>
+<div class="pagination">
     <span th:if="${ordersPage.hasPrevious()}">
         <a th:href="@{/orders(page=${ordersPage.number - 1}, size=${ordersPage.size})}">Trước</a>
     </span>
@@ -99,5 +132,6 @@
         <a th:href="@{/orders(page=${ordersPage.number + 1}, size=${ordersPage.size})}">Tiếp theo</a>
     </span>
 </div>
+
 </body>
 </html>

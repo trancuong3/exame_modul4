@@ -45,16 +45,12 @@ public class DonHangController {
         Pageable pageable = PageRequest.of(page, size);
         Page<DonHang> ordersPage = donHangService.getAllOrders(pageable);
 
-        // Kiểm tra xem ordersPage có dữ liệu hay không
-        if (ordersPage == null || ordersPage.isEmpty()) {
-            model.addAttribute("ordersPage", null); // Hoặc bạn có thể thêm một thông báo rằng không có đơn hàng nào.
-        } else {
-            model.addAttribute("ordersPage", ordersPage);
-        }
+        // Thiết lập model với một Page rỗng nếu không có đơn hàng nào
+        model.addAttribute("ordersPage", ordersPage != null ? ordersPage : Page.empty());
+        model.addAttribute("loaiSanPhams", loaiSanPhamRepository.findAll()); // Thêm danh sách loại sản phẩm nếu cần
 
         return "orderList";
     }
-
 
     @GetMapping("/products/search")
     public ResponseEntity<List<SanPham>> searchProducts(@RequestParam("query") String query) {
@@ -66,11 +62,16 @@ public class DonHangController {
     public String getOrdersByDateRange(
             @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
             @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
             Model model) {
-        List<DonHang> orders = donHangService.getOrdersByDateRange(startDate.atStartOfDay(), endDate.atTime(23, 59, 59));
-        model.addAttribute("orders", orders);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<DonHang> ordersPage = donHangService.getOrdersByDateRange(startDate.atStartOfDay(), endDate.atTime(23, 59, 59), pageable);
+
+        model.addAttribute("ordersPage", ordersPage);
         return "orderList";
     }
+
 
     @GetMapping("/edit/{id}")
     public String editOrder(@PathVariable("id") int id, Model model) {

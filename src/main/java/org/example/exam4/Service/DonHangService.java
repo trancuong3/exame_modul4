@@ -32,13 +32,12 @@ public class DonHangService {
     public List<DonHang> getAllOrders() {
         return donHangRepository.findAll();
     }
-    public Page<DonHang> getAllOrders(Pageable pageable) {
-        return donHangRepository.findAll(pageable);
+
+    public Page<DonHang> getOrdersByDateRange(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
+        return donHangRepository.findByNgayMuaBetween(startDate, endDate, pageable);
     }
 
-    public List<DonHang> getOrdersByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
-        return donHangRepository.findByNgayMuaBetween(startDate, endDate);
-    }
+
     public Optional<DonHang> findById(Integer id) {
         return donHangRepository.findById(id);
     }
@@ -52,6 +51,12 @@ public class DonHangService {
         sanPhamRepository.save(sanPham);
     }
     public Page<DonHang> getOrdersPage(Pageable pageable) {
+        return donHangRepository.findAll(pageable);
+    }
+    public List<DonHang> getOrdersByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
+        return donHangRepository.findByNgayMuaBetween(startDate, endDate);
+    }
+    public Page<DonHang> getAllOrders(Pageable pageable) {
         return donHangRepository.findAll(pageable);
     }
 
