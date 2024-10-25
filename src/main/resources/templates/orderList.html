@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Danh sách đơn hàng</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .suggestions {
+            border: 1px solid #ccc;
+            max-height: 150px;
+            overflow-y: auto;
+            display: none;
+            position: absolute;
+            background-color: white;
+            z-index: 1000;
+        }
+        .suggestion-item {
+            padding: 8px;
+            cursor: pointer;
+        }
+        .suggestion-item:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Danh sách đơn hàng</h1>
+
+<form th:action="@{/orders/date-range}" method="post">
+    <label>Từ ngày: <input type="date" name="startDate" required /></label>
+    <label>Đến ngày: <input type="date" name="endDate" required /></label>
+    <button type="submit">Xem đơn hàng</button>
+</form>
+
+<div>
+    <label for="loaiSanPham">Tìm kiếm loại sản phẩm:</label>
+    <input type="text" id="loaiSanPhamSearch" placeholder="Nhập tên loại sản phẩm..." autocomplete="off" />
+    <div id="suggestions" class="suggestions"></div>
+</div>
+
+<div>
+    <label for="loaiSanPham">Loại sản phẩm:</label>
+    <select id="loaiSanPham" onchange="fetchProducts()">
+        <option value="">Chọn loại sản phẩm</option>
+        <option th:each="lsp : ${loaiSanPhams}" th:value="${lsp.maLoaiSp}" th:text="${lsp.tenLoaiSp}"></option>
+    </select>
+</div>
+
+<div>
+    <label for="sanPham">Sản phẩm:</label>
+    <select id="sanPham">
+        <option value="">Chọn sản phẩm</option>
+    </select>
+</div>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Số thứ tự</th>
+        <th>Mã đơn hàng</th>
+        <th>Tên sản phẩm</th>
+        <th>Giá sản phẩm</th>
+        <th>Loại sản phẩm</th>
+        <th>Ngày mua</th>
+        <th>Số lượng</th>
+        <th>Tổng tiền</th>
+        <th>Chỉnh sửa</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="order, stat : ${ordersPage.content}">
+
+    <td th:text="${stat.index + 1 + (ordersPage != null ? ordersPage.number * ordersPage.size : 0)}"></td>
+        <td th:text="${order.maDonHang}"></td>
+        <td th:text="${order.sanPham?.tenSp}"></td>
+        <td th:text="${order.sanPham?.giaSp}"></td>
+        <td th:text="${order.sanPham?.loaiSanPham?.tenLoaiSp}"></td>
+        <td>
+            <span th:if="${order.ngayMua != null}" th:text="${#temporals.format(order.ngayMua, 'dd/MM/yyyy HH:mm')}"></span>
+            <span th:if="${order.ngayMua == null}">N/A</span>
+        </td>
+        <td th:text="${order.soLuong}"></td>
+        <td th:text="${order.soLuong * (order.sanPham?.giaSp ?: 0)}"></td>
+        <td>
+            <a th:href="@{/orders/edit/{id}(id=${order.maDonHang})}">Sửa</a>
+        </td>
+    </tr>
+    </tbody>
+
+
+
+</table>
+
+<div>
+    <span th:if="${ordersPage.hasPrevious()}">
+        <a th:href="@{/orders(page=${ordersPage.number - 1}, size=${ordersPage.size})}">Trước</a>
+    </span>
+    <span th:if="${ordersPage.hasNext()}">
+        <a th:href="@{/orders(page=${ordersPage.number + 1}, size=${ordersPage.size})}">Tiếp theo</a>
+    </span>
+</div>
+</body>
+</html>

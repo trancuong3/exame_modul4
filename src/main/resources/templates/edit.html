@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Order</title>
+    <script>
+        function validateForm() {
+            const ngayMua = document.getElementById("ngayMua").value;
+            const soLuong = document.getElementById("soLuong").value;
+            const currentDate = new Date();
+            if (!ngayMua) {
+                alert("Ngày mua không được để trống.");
+                return false;
+            }
+
+            const purchaseDate = new Date(ngayMua);
+            if (purchaseDate <= currentDate) {
+                alert("Ngày mua phải lớn hơn ngày hiện tại.");
+                return false;
+            }
+            if (!soLuong || soLuong <= 0) {
+                alert("Số lượng phải là số nguyên dương và không được để trống.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+<h1>Edit Order</h1>
+<form th:action="@{/orders/edit/{id}(id=${donHang.maDonHang})}" th:object="${donHang}" method="post" onsubmit="return validateForm()">
+    <div>
+        <label for="sanPham">Sản phẩm:</label>
+        <select id="sanPham" th:field="*{sanPham}">
+            <option th:each="sp : ${sanPhams}"
+                    th:value="${sp.maSp}"
+                    th:text="${sp.tenSp}"
+                    th:selected="${sp.maSp == donHang.sanPham.maSp}">
+            </option>
+        </select>
+    </div>
+    <div>
+        <label for="loaiSanPham">Loại sản phẩm:</label>
+        <select id="loaiSanPham" th:field="*{sanPham.loaiSanPham}">
+            <option th:each="lsp : ${loaiSanPhams}"
+                    th:value="${lsp.maLoaiSp}"
+                    th:text="${lsp.tenLoaiSp}"
+                    th:selected="${lsp.maLoaiSp == donHang.sanPham.loaiSanPham.maLoaiSp}">
+            </option>
+        </select>
+    </div>
+    <div>
+        <label for="ngayMua">Ngày mua:</label>
+        <input type="datetime-local" id="ngayMua" th:field="*{ngayMua}" />
+    </div>
+    <div>
+        <label for="soLuong">Số lượng:</label>
+        <input type="number" id="soLuong" th:field="*{soLuong}" min="1" th:value="${donHang.soLuong}" />
+    </div>
+    <button type="submit">Cập nhật</button>
+</form>
+</body>
+</html>
