@@ -46,9 +46,9 @@ public class DonHangController {
         Page<DonHang> ordersPage = donHangService.getAllOrders(pageable);
 
 <<<<<<< HEAD
-        // Thiết lập model với một Page rỗng nếu không có đơn hàng nào
+      
         model.addAttribute("ordersPage", ordersPage != null ? ordersPage : Page.empty());
-        model.addAttribute("loaiSanPhams", loaiSanPhamRepository.findAll()); // Thêm danh sách loại sản phẩm nếu cần
+        model.addAttribute("loaiSanPhams", loaiSanPhamRepository.findAll()); 
 =======
        
         if (ordersPage == null || ordersPage.isEmpty()) {
